@@ -234,6 +234,32 @@ static void processTo(txContext_t *context) {
     }
 }
 
+static void processFeeCurrency(txContext_t *context) {
+    if (context->currentFieldIsList) {
+        PRINTF("Invalid type for RLP_FEECURRENCY\n");
+        THROW(EXCEPTION);
+    }
+    if (context->currentFieldLength > MAX_ADDRESS) {
+        PRINTF("Invalid length for RLP_FEECURRENCY\n");
+        THROW(EXCEPTION);
+    }
+    if (context->currentFieldPos < context->currentFieldLength) {
+        uint32_t copySize =
+            (context->commandLength <
+                     ((context->currentFieldLength - context->currentFieldPos))
+                 ? context->commandLength
+                 : context->currentFieldLength - context->currentFieldPos);
+        copyTxData(context,
+                   NULL, 
+                   copySize);
+    }
+    if (context->currentFieldPos == context->currentFieldLength) {
+        context->content->destinationLength = context->currentFieldLength;
+        context->currentField++;
+        context->processingField = false;
+    }
+}
+
 static void processData(txContext_t *context) {
     if (context->currentFieldIsList) {
         PRINTF("Invalid type for RLP_DATA\n");
@@ -384,6 +410,11 @@ static parserStatus_e processTxInternal(txContext_t *context) {
             case TX_RLP_TO:
                 processTo(context);
                 break;
+            case TX_RLP_FEECURRENCY:
+		processFeeCurrency(context);
+		break;
+            case TX_RLP_GATEWAYTO:
+            case TX_RLP_GATEWAYFEE:
             case TX_RLP_DATA:
             case TX_RLP_R:
             case TX_RLP_S:
