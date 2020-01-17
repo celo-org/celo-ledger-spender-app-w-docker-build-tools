@@ -411,8 +411,8 @@ static parserStatus_e processTxInternal(txContext_t *context) {
                 processTo(context);
                 break;
             case TX_RLP_FEECURRENCY:
-		processFeeCurrency(context);
-		break;
+//		processFeeCurrency(context);
+//		break;
             case TX_RLP_GATEWAYTO:
             case TX_RLP_GATEWAYFEE:
             case TX_RLP_DATA:
