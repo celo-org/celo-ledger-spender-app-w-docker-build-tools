@@ -296,6 +296,7 @@ void menu_settings_details_change(unsigned int enabled) {
 // show the currently activated entry
 void menu_settings_data_init(unsigned int ignored) {
   UNUSED(ignored);
+  int x = 4;
   UX_MENU_DISPLAY(N_storage.dataAllowed?1:0, menu_settings_data, NULL);
 }
 
@@ -1792,6 +1793,9 @@ tokenDefinition_t* getKnownToken() {
         case CHAIN_KIND_ETHEREUM_CLASSIC:
             numTokens = NUM_TOKENS_ETHEREUM_CLASSIC;
             break;
+        case CHAIN_KIND_CELO:
+	    numTokens = NUM_TOKENS_CELO;
+	    break;
         case CHAIN_KIND_PIRL:
             numTokens = NUM_TOKENS_PIRL;
             break;

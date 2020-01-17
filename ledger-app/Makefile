@@ -20,7 +20,7 @@ $(error Environment variable BOLOS_SDK is not set)
 endif
 include $(BOLOS_SDK)/Makefile.defines
 
-DEFINES_LIB = USE_LIB_ETHEREUM
+#DEFINES_LIB = USE_LIB_ETHEREUM
 APP_LOAD_PARAMS= --curve secp256k1 $(COMMON_LOAD_PARAMS)
 # Allow the app to use path 45 for multi-sig (see BIP45).
 APP_LOAD_PARAMS += --path "45'"
@@ -44,7 +44,7 @@ DEFINES_LIB=
 APP_LOAD_FLAGS=--appFlags 0xa40
 else ifeq ($(CHAIN), celo)
 APP_LOAD_PARAMS += --path "44'/60'"
-DEFINES += CHAINID_UPCASE=\"CELO\" CHAINID_COINNAME=\"cGLD\" CHAIN_KIND=CHAIN_KIND_ETHEREUM CHAIN_ID=0
+DEFINES += CHAINID_UPCASE=\"CELO\" CHAINID_COINNAME=\"cGLD\" CHAIN_KIND=CHAIN_KIND_CELO CHAIN_ID=0
 APPNAME = "Celo"
 else ifeq ($(CHAIN),ellaism)
 APP_LOAD_PARAMS += --path "44'/163'"
