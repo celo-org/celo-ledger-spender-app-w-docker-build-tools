@@ -2228,13 +2228,13 @@ void finalizeParsing(bool direct) {
     strcpy(strings.common.fullAddress, "Contract");
   }
   // Add gateway fee recipient address
-  if (tmpContent.txContent.gatewayDestinationLength != 0) {
+//  if (tmpContent.txContent.gatewayDestinationLength != 0) {
     getEthAddressStringFromBinary(tmpContent.txContent.gatewayDestination, gatewayAddress, &sha3);
     strings.common.fullGatewayAddress[0] = '0';
     strings.common.fullGatewayAddress[1] = 'x';
     os_memmove((unsigned char *)strings.common.fullGatewayAddress+2, gatewayAddress, 40);
     strings.common.fullGatewayAddress[42] = '\0';
-  }
+//  }
 //  else
 //  {
 	  // TODO: include behavior for no gateway recipient
@@ -2288,7 +2288,14 @@ void finalizeParsing(bool direct) {
   ui_approval_transaction_blue_init();
 #elif defined(TARGET_NANOS)
   ux_step = 0;
-  ux_step_count = 7;
+  // only display gateway fields if present
+  if (tmpContent.txContent.gatewayDestinationLength != 0) {
+      ux_step_count = 7;
+  }
+  else
+  {
+      ux_step_count = 5;
+  }
   UX_DISPLAY(ui_approval_nanos, ui_approval_prepro);
 #elif defined(TARGET_NANOX)
   ux_flow_init(0,
