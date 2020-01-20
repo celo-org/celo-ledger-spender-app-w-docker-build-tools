@@ -840,6 +840,12 @@ unsigned int ui_approval_prepro(const bagl_element_t* element) {
           case 5:
             UX_CALLBACK_SET_INTERVAL(MAX(3000, 1000+bagl_label_roundtrip_duration_ms(element, 7)));
             break;
+          case 6:
+            UX_CALLBACK_SET_INTERVAL(MAX(3000, 1000+bagl_label_roundtrip_duration_ms(element, 7)));
+            break;
+          case 7:
+            UX_CALLBACK_SET_INTERVAL(MAX(3000, 1000+bagl_label_roundtrip_duration_ms(element, 7)));
+            break;
           }
         }
     }
@@ -2282,7 +2288,7 @@ void finalizeParsing(bool direct) {
   ui_approval_transaction_blue_init();
 #elif defined(TARGET_NANOS)
   ux_step = 0;
-  ux_step_count = 8;
+  ux_step_count = 7;
   UX_DISPLAY(ui_approval_nanos, ui_approval_prepro);
 #elif defined(TARGET_NANOX)
   ux_flow_init(0,
