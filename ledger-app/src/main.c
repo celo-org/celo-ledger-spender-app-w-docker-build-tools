@@ -174,6 +174,7 @@ typedef struct internalStorage_t {
 
 typedef struct strData_t {
     char fullAddress[43];
+    char fullGatewayAddress[43];
     char fullAmount[50];
     char maxFee[50];
 } strData_t;
@@ -804,7 +805,12 @@ const bagl_element_t ui_approval_nanos[] = {
 
   {{BAGL_LABELINE                       , 0x05,   0,  12, 128,  32, 0, 0, 0        , 0xFFFFFF, 0x000000, BAGL_FONT_OPEN_SANS_REGULAR_11px|BAGL_FONT_ALIGNMENT_CENTER, 0  }, "Maximum fees", 0, 0, 0, NULL, NULL, NULL },
   {{BAGL_LABELINE                       , 0x05,  23,  26,  82,  12, 0x80|10, 0, 0  , 0xFFFFFF, 0x000000, BAGL_FONT_OPEN_SANS_EXTRABOLD_11px|BAGL_FONT_ALIGNMENT_CENTER, 26  }, (char*)strings.common.maxFee, 0, 0, 0, NULL, NULL, NULL },
-
+  
+  {{BAGL_LABELINE                       , 0x06,   0,  12, 128,  32, 0, 0, 0        , 0xFFFFFF, 0x000000, BAGL_FONT_OPEN_SANS_REGULAR_11px|BAGL_FONT_ALIGNMENT_CENTER, 0  }, "Gateway Fee", 0, 0, 0, NULL, NULL, NULL },
+  {{BAGL_LABELINE                       , 0x06,  23,  26,  82,  12, 0x80|10, 0, 0  , 0xFFFFFF, 0x000000, BAGL_FONT_OPEN_SANS_EXTRABOLD_11px|BAGL_FONT_ALIGNMENT_CENTER, 26  }, (char*)strings.common.fullAmount, 0, 0, 0, NULL, NULL, NULL },
+  
+  {{BAGL_LABELINE                       , 0x07,   0,  12, 128,  32, 0, 0, 0        , 0xFFFFFF, 0x000000, BAGL_FONT_OPEN_SANS_REGULAR_11px|BAGL_FONT_ALIGNMENT_CENTER, 0  }, "Gateway Fee Addr", 0, 0, 0, NULL, NULL, NULL },
+  {{BAGL_LABELINE                       , 0x07,  23,  26,  82,  12, 0x80|10, 0, 0        , 0xFFFFFF, 0x000000, BAGL_FONT_OPEN_SANS_EXTRABOLD_11px|BAGL_FONT_ALIGNMENT_CENTER, 50   }, (char*)strings.common.fullGatewayAddress, 0, 0, 0, NULL, NULL, NULL },
 };
 
 unsigned int ui_approval_prepro(const bagl_element_t* element) {
@@ -2144,6 +2150,7 @@ void finalizeParsing(bool direct) {
   uint256_t gasPrice, startGas, uint256;
   uint32_t i;
   uint8_t address[41];
+  uint8_t gatewayAddress[41];
   uint8_t decimals = WEI_TO_ETHER;
   uint8_t *ticker = (uint8_t *)PIC(chainConfig->coinName);
   uint8_t *feeTicker = (uint8_t *)PIC(chainConfig->coinName);
@@ -2214,6 +2221,18 @@ void finalizeParsing(bool direct) {
     os_memmove((void*)addressSummary, CONTRACT_ADDRESS, sizeof(CONTRACT_ADDRESS));
     strcpy(strings.common.fullAddress, "Contract");
   }
+  // Add gateway fee recipient address
+  if (tmpContent.txContent.gatewayDestinationLength != 0) {
+    getEthAddressStringFromBinary(tmpContent.txContent.gatewayDestination, gatewayAddress, &sha3);
+    strings.common.fullGatewayAddress[0] = '0';
+    strings.common.fullGatewayAddress[1] = 'x';
+    os_memmove((unsigned char *)strings.common.fullGatewayAddress+2, gatewayAddress, 40);
+    strings.common.fullGatewayAddress[42] = '\0';
+  }
+//  else
+//  {
+	  // TODO: include behavior for no gateway recipient
+//  }
   // Add amount in ethers or tokens
   convertUint256BE(tmpContent.txContent.value.value, tmpContent.txContent.value.length, &uint256);
   tostring256(&uint256, 10, (char *)(G_io_apdu_buffer + 100), 100);
@@ -2263,7 +2282,7 @@ void finalizeParsing(bool direct) {
   ui_approval_transaction_blue_init();
 #elif defined(TARGET_NANOS)
   ux_step = 0;
-  ux_step_count = 5;
+  ux_step_count = 8;
   UX_DISPLAY(ui_approval_nanos, ui_approval_prepro);
 #elif defined(TARGET_NANOX)
   ux_flow_init(0,

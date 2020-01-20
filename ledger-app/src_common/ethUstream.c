@@ -198,7 +198,7 @@ static void processGatewayFee(txContext_t *context) {
                  ? context->commandLength
                  : context->currentFieldLength - context->currentFieldPos);
         copyTxData(context,
-                   context->content->gasprice.value + context->currentFieldPos,
+                   NULL, 
                    copySize);
     }
     if (context->currentFieldPos == context->currentFieldLength) {
@@ -278,7 +278,6 @@ static void processFeeCurrency(txContext_t *context) {
                    copySize);
     }
     if (context->currentFieldPos == context->currentFieldLength) {
-        context->content->destinationLength = context->currentFieldLength;
         context->currentField++;
         context->processingField = false;
     }
@@ -300,11 +299,11 @@ static void processGatewayTo(txContext_t *context) {
                  ? context->commandLength
                  : context->currentFieldLength - context->currentFieldPos);
         copyTxData(context,
-                   NULL, 
+                   context->content->gatewayDestination + context->currentFieldPos,
                    copySize);
     }
     if (context->currentFieldPos == context->currentFieldLength) {
-        context->content->destinationLength = context->currentFieldLength;
+        context->content->gatewayDestinationLength = context->currentFieldLength;
         context->currentField++;
         context->processingField = false;
     }
