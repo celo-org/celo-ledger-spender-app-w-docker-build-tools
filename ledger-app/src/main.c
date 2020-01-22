@@ -2162,6 +2162,7 @@ void finalizeParsing(bool direct) {
   uint8_t address[41];
   uint8_t gatewayAddress[41];
   uint8_t decimals = WEI_TO_ETHER;
+  uint8_t feeDecimals = WEI_TO_ETHER;
   uint8_t *ticker = (uint8_t *)PIC(chainConfig->coinName);
   uint8_t *feeTicker = (uint8_t *)PIC(chainConfig->coinName);
   uint8_t tickerOffset = 0;
@@ -2170,6 +2171,7 @@ void finalizeParsing(bool direct) {
   if (tmpContent.txContent.feeCurrencyLength != 0) {
     tokenDefinition_t *feeCurrencyToken = getKnownToken(tmpContent.txContent.feeCurrency);
     feeTicker = feeCurrencyToken->ticker;
+    feeDecimals = feeCurrencyToken->decimals;
   }
 
   // Verify the chain
@@ -2271,7 +2273,7 @@ void finalizeParsing(bool direct) {
   while (G_io_apdu_buffer[100 + i]) {
     i++;
   }
-  adjustDecimals((char *)(G_io_apdu_buffer + 100), i, (char *)G_io_apdu_buffer, 100, decimals);
+  adjustDecimals((char *)(G_io_apdu_buffer + 100), i, (char *)G_io_apdu_buffer, 100, feeDecimals);
   i = 0;
     tickerOffset = 0;
     while (feeTicker[tickerOffset]) {
@@ -2282,7 +2284,7 @@ void finalizeParsing(bool direct) {
         strings.common.gatewayFee[tickerOffset + i] = G_io_apdu_buffer[i];
         i++;
     }
-  strings.common.fullAmount[tickerOffset + i] = '\0';
+  strings.common.gatewayFee[tickerOffset + i] = '\0';
   // Compute maximum fee
   convertUint256BE(tmpContent.txContent.gasprice.value, tmpContent.txContent.gasprice.length, &gasPrice);
   convertUint256BE(tmpContent.txContent.startgas.value, tmpContent.txContent.startgas.length, &startGas);
@@ -2292,7 +2294,7 @@ void finalizeParsing(bool direct) {
   while (G_io_apdu_buffer[100 + i]) {
     i++;
   }
-  adjustDecimals((char *)(G_io_apdu_buffer + 100), i, (char *)G_io_apdu_buffer, 100, WEI_TO_ETHER);
+  adjustDecimals((char *)(G_io_apdu_buffer + 100), i, (char *)G_io_apdu_buffer, 100, feeDecimals);
   i = 0;
   tickerOffset=0;
   while (feeTicker[tickerOffset]) {
