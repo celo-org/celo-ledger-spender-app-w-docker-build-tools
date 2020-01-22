@@ -76,6 +76,8 @@ typedef struct txContent_t {
     uint8_t destinationLength;
     uint8_t gatewayDestination[20];
     uint8_t gatewayDestinationLength;
+    uint8_t feeCurrency[20];
+    uint8_t feeCurrencyLength;
     uint8_t v[4];
     uint8_t vLength;
 } txContent_t;

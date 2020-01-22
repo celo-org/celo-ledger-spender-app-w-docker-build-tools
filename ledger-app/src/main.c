@@ -1790,7 +1790,7 @@ uint32_t splitBinaryParameterPart(char *result, uint8_t *parameter) {
     }
 }
 
-tokenDefinition_t* getKnownToken() {
+tokenDefinition_t* getKnownToken(char *tokenAddr) {
     tokenDefinition_t *currentToken = NULL;
 #ifdef HAVE_TOKENS_LIST
     uint32_t numTokens = 0;
@@ -1976,7 +1976,7 @@ customStatus_e customProcessor(txContext_t *context) {
             tokenProvisioned =
                 (context->currentFieldLength == sizeof(dataContext.tokenContext.data)) &&
                 (os_memcmp(context->workBuffer, TOKEN_TRANSFER_ID, 4) == 0) &&
-                (getKnownToken() != NULL);
+                (getKnownToken(tmpContent.txContent.destination) != NULL);
         }
         if (tokenProvisioned) {
             if (context->currentFieldPos < context->currentFieldLength) {
@@ -2165,6 +2165,12 @@ void finalizeParsing(bool direct) {
   uint8_t *feeTicker = (uint8_t *)PIC(chainConfig->coinName);
   uint8_t tickerOffset = 0;
 
+  // Display correct currency if fee currency field sent
+  if (tmpContent.txContent.feeCurrencyLength != 0) {
+    tokenDefinition_t *feeCurrencyToken = getKnownToken(tmpContent.txContent.feeCurrency);
+    feeTicker = feeCurrencyToken->ticker;
+  }
+
   // Verify the chain
   if (chainConfig->chainId != 0) {
     uint32_t v = getV(&tmpContent.txContent);
@@ -2184,7 +2190,7 @@ void finalizeParsing(bool direct) {
   cx_hash((cx_hash_t *)&sha3, CX_LAST, tmpCtx.transactionContext.hash, 0, tmpCtx.transactionContext.hash);
     // If there is a token to process, check if it is well known
     if (tokenProvisioned) {
-        tokenDefinition_t *currentToken = getKnownToken();
+        tokenDefinition_t *currentToken = getKnownToken(tmpContent.txContent.destination);
         if (currentToken != NULL) {
             dataPresent = false;
             decimals = currentToken->decimals;

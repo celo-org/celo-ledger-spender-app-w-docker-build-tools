@@ -274,10 +274,11 @@ static void processFeeCurrency(txContext_t *context) {
                  ? context->commandLength
                  : context->currentFieldLength - context->currentFieldPos);
         copyTxData(context,
-                   NULL, 
+                   context->content->feeCurrency + context->currentFieldPos, 
                    copySize);
     }
     if (context->currentFieldPos == context->currentFieldLength) {
+	context->content->feeCurrencyLength = context->currentFieldLength;    
         context->currentField++;
         context->processingField = false;
     }
