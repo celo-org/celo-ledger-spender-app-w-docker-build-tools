@@ -198,10 +198,11 @@ static void processGatewayFee(txContext_t *context) {
                  ? context->commandLength
                  : context->currentFieldLength - context->currentFieldPos);
         copyTxData(context,
-                   NULL, 
+                   context->content->gatewayFee.value + context->currentFieldPos, 
                    copySize);
     }
     if (context->currentFieldPos == context->currentFieldLength) {
+        context->content->gatewayFee.length = context->currentFieldLength;
         context->currentField++;
         context->processingField = false;
     }

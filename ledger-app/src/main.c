@@ -177,6 +177,7 @@ typedef struct strData_t {
     char fullGatewayAddress[43];
     char fullAmount[50];
     char maxFee[50];
+    char gatewayFee[50];
 } strData_t;
 
 typedef struct strDataTmp_t {
@@ -807,7 +808,7 @@ const bagl_element_t ui_approval_nanos[] = {
   {{BAGL_LABELINE                       , 0x05,  23,  26,  82,  12, 0x80|10, 0, 0  , 0xFFFFFF, 0x000000, BAGL_FONT_OPEN_SANS_EXTRABOLD_11px|BAGL_FONT_ALIGNMENT_CENTER, 26  }, (char*)strings.common.maxFee, 0, 0, 0, NULL, NULL, NULL },
   
   {{BAGL_LABELINE                       , 0x06,   0,  12, 128,  32, 0, 0, 0        , 0xFFFFFF, 0x000000, BAGL_FONT_OPEN_SANS_REGULAR_11px|BAGL_FONT_ALIGNMENT_CENTER, 0  }, "Gateway Fee", 0, 0, 0, NULL, NULL, NULL },
-  {{BAGL_LABELINE                       , 0x06,  23,  26,  82,  12, 0x80|10, 0, 0  , 0xFFFFFF, 0x000000, BAGL_FONT_OPEN_SANS_EXTRABOLD_11px|BAGL_FONT_ALIGNMENT_CENTER, 26  }, (char*)strings.common.fullAmount, 0, 0, 0, NULL, NULL, NULL },
+  {{BAGL_LABELINE                       , 0x06,  23,  26,  82,  12, 0x80|10, 0, 0  , 0xFFFFFF, 0x000000, BAGL_FONT_OPEN_SANS_EXTRABOLD_11px|BAGL_FONT_ALIGNMENT_CENTER, 26  }, (char*)strings.common.maxFee, 0, 0, 0, NULL, NULL, NULL },
   
   {{BAGL_LABELINE                       , 0x07,   0,  12, 128,  32, 0, 0, 0        , 0xFFFFFF, 0x000000, BAGL_FONT_OPEN_SANS_REGULAR_11px|BAGL_FONT_ALIGNMENT_CENTER, 0  }, "Gateway Fee Addr", 0, 0, 0, NULL, NULL, NULL },
   {{BAGL_LABELINE                       , 0x07,  23,  26,  82,  12, 0x80|10, 0, 0        , 0xFFFFFF, 0x000000, BAGL_FONT_OPEN_SANS_EXTRABOLD_11px|BAGL_FONT_ALIGNMENT_CENTER, 50   }, (char*)strings.common.fullGatewayAddress, 0, 0, 0, NULL, NULL, NULL },
@@ -2237,17 +2238,13 @@ void finalizeParsing(bool direct) {
     strcpy(strings.common.fullAddress, "Contract");
   }
   // Add gateway fee recipient address
-//  if (tmpContent.txContent.gatewayDestinationLength != 0) {
+  if (tmpContent.txContent.gatewayDestinationLength != 0) {
     getEthAddressStringFromBinary(tmpContent.txContent.gatewayDestination, gatewayAddress, &sha3);
     strings.common.fullGatewayAddress[0] = '0';
     strings.common.fullGatewayAddress[1] = 'x';
     os_memmove((unsigned char *)strings.common.fullGatewayAddress+2, gatewayAddress, 40);
     strings.common.fullGatewayAddress[42] = '\0';
-//  }
-//  else
-//  {
-	  // TODO: include behavior for no gateway recipient
-//  }
+  }
   // Add amount in ethers or tokens
   convertUint256BE(tmpContent.txContent.value.value, tmpContent.txContent.value.length, &uint256);
   tostring256(&uint256, 10, (char *)(G_io_apdu_buffer + 100), 100);
@@ -2264,6 +2261,25 @@ void finalizeParsing(bool direct) {
     }
     while (G_io_apdu_buffer[i]) {
         strings.common.fullAmount[tickerOffset + i] = G_io_apdu_buffer[i];
+        i++;
+    }
+  strings.common.fullAmount[tickerOffset + i] = '\0';
+  // Add gateway fee
+  convertUint256BE(tmpContent.txContent.gatewayFee.value, tmpContent.txContent.gatewayFee.length, &uint256);
+  tostring256(&uint256, 10, (char *)(G_io_apdu_buffer + 100), 100);
+  i = 0;
+  while (G_io_apdu_buffer[100 + i]) {
+    i++;
+  }
+  adjustDecimals((char *)(G_io_apdu_buffer + 100), i, (char *)G_io_apdu_buffer, 100, decimals);
+  i = 0;
+    tickerOffset = 0;
+    while (feeTicker[tickerOffset]) {
+        strings.common.gatewayFee[tickerOffset] = feeTicker[tickerOffset];
+        tickerOffset++;
+    }
+    while (G_io_apdu_buffer[i]) {
+        strings.common.gatewayFee[tickerOffset + i] = G_io_apdu_buffer[i];
         i++;
     }
   strings.common.fullAmount[tickerOffset + i] = '\0';
