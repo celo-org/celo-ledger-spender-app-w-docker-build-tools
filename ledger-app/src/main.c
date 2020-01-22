@@ -806,12 +806,15 @@ const bagl_element_t ui_approval_nanos[] = {
 
   {{BAGL_LABELINE                       , 0x05,   0,  12, 128,  32, 0, 0, 0        , 0xFFFFFF, 0x000000, BAGL_FONT_OPEN_SANS_REGULAR_11px|BAGL_FONT_ALIGNMENT_CENTER, 0  }, "Maximum fees", 0, 0, 0, NULL, NULL, NULL },
   {{BAGL_LABELINE                       , 0x05,  23,  26,  82,  12, 0x80|10, 0, 0  , 0xFFFFFF, 0x000000, BAGL_FONT_OPEN_SANS_EXTRABOLD_11px|BAGL_FONT_ALIGNMENT_CENTER, 26  }, (char*)strings.common.maxFee, 0, 0, 0, NULL, NULL, NULL },
+
+  {{BAGL_LABELINE, 0x06, 0, 12, 128, 32, 0, 0, 0, 0xFFFFFF, 0x000000, BAGL_FONT_OPEN_SANS_REGULAR_11px | BAGL_FONT_ALIGNMENT_CENTER, 0}, "No Gateway Fee", 0, 0, 0, NULL, NULL, NULL},
+  {{BAGL_LABELINE, 0x06, 23, 26, 82, 12, 0, 0, 0, 0xFFFFFF, 0x000000, BAGL_FONT_OPEN_SANS_EXTRABOLD_11px | BAGL_FONT_ALIGNMENT_CENTER, 0}, "", 0, 0, 0, NULL, NULL, NULL},
   
-  {{BAGL_LABELINE                       , 0x06,   0,  12, 128,  32, 0, 0, 0        , 0xFFFFFF, 0x000000, BAGL_FONT_OPEN_SANS_REGULAR_11px|BAGL_FONT_ALIGNMENT_CENTER, 0  }, "Gateway Fee", 0, 0, 0, NULL, NULL, NULL },
-  {{BAGL_LABELINE                       , 0x06,  23,  26,  82,  12, 0x80|10, 0, 0  , 0xFFFFFF, 0x000000, BAGL_FONT_OPEN_SANS_EXTRABOLD_11px|BAGL_FONT_ALIGNMENT_CENTER, 26  }, (char*)strings.common.maxFee, 0, 0, 0, NULL, NULL, NULL },
+  {{BAGL_LABELINE                       , 0x07,   0,  12, 128,  32, 0, 0, 0        , 0xFFFFFF, 0x000000, BAGL_FONT_OPEN_SANS_REGULAR_11px|BAGL_FONT_ALIGNMENT_CENTER, 0  }, "Gateway Fee", 0, 0, 0, NULL, NULL, NULL },
+  {{BAGL_LABELINE                       , 0x07,  23,  26,  82,  12, 0x80|10, 0, 0  , 0xFFFFFF, 0x000000, BAGL_FONT_OPEN_SANS_EXTRABOLD_11px|BAGL_FONT_ALIGNMENT_CENTER, 26  }, (char*)strings.common.maxFee, 0, 0, 0, NULL, NULL, NULL },
   
-  {{BAGL_LABELINE                       , 0x07,   0,  12, 128,  32, 0, 0, 0        , 0xFFFFFF, 0x000000, BAGL_FONT_OPEN_SANS_REGULAR_11px|BAGL_FONT_ALIGNMENT_CENTER, 0  }, "Gateway Fee Addr", 0, 0, 0, NULL, NULL, NULL },
-  {{BAGL_LABELINE                       , 0x07,  23,  26,  82,  12, 0x80|10, 0, 0        , 0xFFFFFF, 0x000000, BAGL_FONT_OPEN_SANS_EXTRABOLD_11px|BAGL_FONT_ALIGNMENT_CENTER, 50   }, (char*)strings.common.fullGatewayAddress, 0, 0, 0, NULL, NULL, NULL },
+  {{BAGL_LABELINE                       , 0x08,   0,  12, 128,  32, 0, 0, 0        , 0xFFFFFF, 0x000000, BAGL_FONT_OPEN_SANS_REGULAR_11px|BAGL_FONT_ALIGNMENT_CENTER, 0  }, "Gateway Fee Addr", 0, 0, 0, NULL, NULL, NULL },
+  {{BAGL_LABELINE                       , 0x08,  23,  26,  82,  12, 0x80|10, 0, 0        , 0xFFFFFF, 0x000000, BAGL_FONT_OPEN_SANS_EXTRABOLD_11px|BAGL_FONT_ALIGNMENT_CENTER, 50   }, (char*)strings.common.fullGatewayAddress, 0, 0, 0, NULL, NULL, NULL },
 };
 
 unsigned int ui_approval_prepro(const bagl_element_t* element) {
@@ -841,10 +844,18 @@ unsigned int ui_approval_prepro(const bagl_element_t* element) {
           case 5:
             UX_CALLBACK_SET_INTERVAL(MAX(3000, 1000+bagl_label_roundtrip_duration_ms(element, 7)));
             break;
-          case 6:
+	  case 6:
+	    if (tmpContent.txContent.gatewayDestinationLength == 0) { 
+              UX_CALLBACK_SET_INTERVAL(3000);
+            }
+            else {
+              display = 0;
+              ux_step++; // display the next step
+            }
+          case 7:
             UX_CALLBACK_SET_INTERVAL(MAX(3000, 1000+bagl_label_roundtrip_duration_ms(element, 7)));
             break;
-          case 7:
+          case 8:
             UX_CALLBACK_SET_INTERVAL(MAX(3000, 1000+bagl_label_roundtrip_duration_ms(element, 7)));
             break;
           }
@@ -2317,10 +2328,10 @@ void finalizeParsing(bool direct) {
   ux_step = 0;
   // only display gateway fields if present
   if (tmpContent.txContent.gatewayDestinationLength != 0) {
-    ux_step_count = 7;
+    ux_step_count = 8;
   }
   else {
-    ux_step_count = 5;
+    ux_step_count = 6;
   }
   UX_DISPLAY(ui_approval_nanos, ui_approval_prepro);
 #elif defined(TARGET_NANOX)
