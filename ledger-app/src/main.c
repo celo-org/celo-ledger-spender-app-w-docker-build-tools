@@ -1874,6 +1874,9 @@ tokenDefinition_t* getKnownToken() {
             case CHAIN_KIND_AKROMA:
                 currentToken = (tokenDefinition_t *)PIC(&TOKENS_AKROMA[i]);
                 break;
+            case CHAIN_KIND_CELO:
+         	currentToken = (tokenDefinition_t *)PIC(&TOKENS_CELO[i]);		
+		break;
             case CHAIN_KIND_ETHEREUM:
                 currentToken = (tokenDefinition_t *)PIC(&TOKENS_ETHEREUM[i]);
                 break;
@@ -2290,11 +2293,10 @@ void finalizeParsing(bool direct) {
   ux_step = 0;
   // only display gateway fields if present
   if (tmpContent.txContent.gatewayDestinationLength != 0) {
-      ux_step_count = 7;
+    ux_step_count = 7;
   }
-  else
-  {
-      ux_step_count = 5;
+  else {
+    ux_step_count = 5;
   }
   UX_DISPLAY(ui_approval_nanos, ui_approval_prepro);
 #elif defined(TARGET_NANOX)
