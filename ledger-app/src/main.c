@@ -1956,13 +1956,13 @@ tokenDefinition_t* getKnownToken(char *tokenAddr) {
                 currentToken = (tokenDefinition_t *)PIC(&TOKENS_TOBALABA[i]);
                 break;
         }
-        if (os_memcmp(currentToken->address, tmpContent.txContent.destination, 20) == 0) {
+        if (os_memcmp(currentToken->address, tokenAddr, 20) == 0) {
             return currentToken;
         }
     }
 #endif
 
-    if ((currentTokenSet || tokenProvisioned) && (os_memcmp(tmpCtx.transactionContext.currentToken.address, tmpContent.txContent.destination, 20) == 0)) {
+    if ((currentTokenSet || tokenProvisioned) && (os_memcmp(tmpCtx.transactionContext.currentToken.address, tokenAddr, 20) == 0)) {
       currentTokenSet = false;
       return &tmpCtx.transactionContext.currentToken;
     }
