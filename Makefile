@@ -19,7 +19,7 @@ dockerimage:
 	docker build -t 'celo-org/validator-signer' .
 
 load: all
-	TARGET_ID=0x31000001
+	TARGET_ID=0x33000004
 	cd ledger-app && python -m ledgerblue.loadApp $(APP_LOAD_PARAMS)
 
 delete:

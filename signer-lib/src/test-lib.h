@@ -1,1 +1,0 @@
-char test_sign();

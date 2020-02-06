@@ -28,11 +28,15 @@ RUN echo "Install custom clang" && \
   mv ${BOLOS_ENV}/clang+llvm-7.0.1-x86_64-linux-gnu-ubuntu-18.04 ${BOLOS_ENV}/clang-arm-fropi && \
   rm /tmp/clang.tar.xz
 
-RUN echo "Install Ledger Nano S SDK" && \
-  git clone https://github.com/LedgerHQ/nanos-secure-sdk.git ${BOLOS_SDK} && \
-  cd ${BOLOS_SDK} && git checkout tags/nanos-1552
+#RUN echo "Install Ledger Nano S SDK" && \
+#  git clone https://github.com/LedgerHQ/nanos-secure-sdk.git ${BOLOS_SDK} && \
+#  cd ${BOLOS_SDK} && git checkout tags/nanos-1552
+
+RUN echo "Install Ledger Nano X SDK"
+COPY sdk-nanox-1.2.4-1.5 ${BOLOS_SDK}
 
 # Rust setup
+RUN apt-get update --fix-missing
 RUN apt-get install -y build-essential 
 RUN curl https://sh.rustup.rs -sSf | sh -s -- -v -y
 
@@ -45,9 +49,9 @@ RUN rustup target add thumbv6m-none-eabi
 # Ledgerblue tooling
 RUN apt-get install -y software-properties-common
 RUN add-apt-repository universe
-RUN apt-get install -y python-pip
+RUN apt-get install -y python3-pip
 RUN apt-get install -y libudev-dev libusb-dev libusb-1.0-0-dev
-RUN pip2 install ledgerblue
+RUN pip3 install ledgerblue
 
 COPY ./bin/init /usr/local/bin/init
 ENTRYPOINT ["init"]

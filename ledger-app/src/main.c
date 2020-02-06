@@ -153,7 +153,7 @@ volatile bool currentTokenSet;
 
 bagl_element_t tmp_element;
 
-#ifdef TARGET_NANOX
+//#ifdef TARGET_NANOX
 #include "ux.h"
 ux_state_t G_ux;
 bolos_ux_params_t G_ux_params;
