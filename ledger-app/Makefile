@@ -43,7 +43,7 @@ APPNAME = "Ethereum"
 DEFINES_LIB=
 APP_LOAD_FLAGS=--appFlags 0xa40
 else ifeq ($(CHAIN), celo)
-APP_LOAD_PARAMS += --path "44'/60'"
+APP_LOAD_PARAMS += --path "44'/52752'"
 DEFINES += CHAINID_UPCASE=\"CELO\" CHAINID_COINNAME=\"cGLD\" CHAIN_KIND=CHAIN_KIND_CELO CHAIN_ID=0
 APPNAME = "Celo"
 else ifeq ($(CHAIN),ellaism)
