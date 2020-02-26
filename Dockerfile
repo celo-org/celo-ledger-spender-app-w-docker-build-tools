@@ -28,12 +28,12 @@ RUN echo "Install custom clang" && \
   mv ${BOLOS_ENV}/clang+llvm-7.0.1-x86_64-linux-gnu-ubuntu-18.04 ${BOLOS_ENV}/clang-arm-fropi && \
   rm /tmp/clang.tar.xz
 
-#RUN echo "Install Ledger Nano S SDK" && \
-#  git clone https://github.com/LedgerHQ/nanos-secure-sdk.git ${BOLOS_SDK} && \
-#  cd ${BOLOS_SDK} && git checkout tags/nanos-1552
+RUN echo "Install Ledger Nano S SDK" && \
+  git clone https://github.com/LedgerHQ/nanos-secure-sdk.git ${BOLOS_SDK} && \
+  cd ${BOLOS_SDK} && git checkout tags/nanos-1552
 
-RUN echo "Install Ledger Nano X SDK"
-COPY sdk-nanox-1.2.4-1.5 ${BOLOS_SDK}
+#RUN echo "Install Ledger Nano X SDK"
+#COPY sdk-nanox-1.2.4-1.5 ${BOLOS_SDK}
 
 # Rust setup
 RUN apt-get update --fix-missing
