@@ -1,0 +1,3 @@
+[submodule "ledger-app-celo"]
+	path = ledger-app-celo
+	url = https://github.com/celo-org/ledger-app-celo
