@@ -15,9 +15,13 @@ clean:
 dockerimage:
 	docker build -t 'celo-org/validator-signer' .
 
-load: all
+load: 
 	TARGET_ID=0x31100004
-	cd ledger-app-celo && python -m ledgerblue.loadApp $(APP_LOAD_PARAMS)
+	cd ledger-app-celo && python3 -m ledgerblue.loadApp $(APP_LOAD_PARAMS)
+
+loadeth:
+	TARGET_ID=0x31100004
+	cd ledger-app-eth && python3 -m ledgerblue.loadApp $(APP_LOAD_PARAMS)
 
 delete:
-	cd ledger-app-celo && python -m ledgerblue.deleteApp $(COMMON_DELETE_PARAMS)
+	cd ledger-app-celo && python3 -m ledgerblue.deleteApp $(COMMON_DELETE_PARAMS)
