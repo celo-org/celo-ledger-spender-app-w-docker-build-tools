@@ -13,6 +13,7 @@ You can download the latest version from `https://github.com/LedgerHQ/nanos-secu
 
 ## Loading
 
+Make sure you have `ledgerblue` installed by running `pip3 install ledgerblue`.
 You can build and load the app onto your Ledger Nano by running `make load`. Be sure to have your nano plugged into your computer via USB, and that no other app is using it (e.g., Ledger Live or celo-blockchain).
 
 ## No consent
