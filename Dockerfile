@@ -41,7 +41,7 @@ RUN apt-get update --fix-missing
 RUN apt-get install -y build-essential 
 RUN curl https://sh.rustup.rs -sSf | sh -s -- -v -y
 
-ENV PATH="${PATH}:/root/.cargo/bin"
+ENV PATH="${PATH}:/root/.cargo/bin:/opt/bolos-env/gcc-arm-none-eabi-5_3-2016q1/bin"
 
 RUN rustup install nightly
 RUN rustup override set nightly
